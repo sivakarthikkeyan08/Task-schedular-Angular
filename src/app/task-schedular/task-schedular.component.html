@@ -1,0 +1,152 @@
+<div class="task-schedular-container">
+  <h2>Task Scheduler</h2>
+  
+  <!-- Task Input Form -->
+  <div class="task-form-container">
+    <h3>Add New Task</h3>
+    <form [formGroup]="taskForm" (ngSubmit)="addTask()" class="task-form">
+      
+      <!-- Task Name Field -->
+      <div class="form-group">
+        <label for="taskName">Task Name:</label>
+        <input 
+          id="taskName"
+          type="text" 
+          formControlName="name" 
+          placeholder="Enter task name"
+          class="form-control"
+          [class.error]="taskName?.invalid && taskName?.touched">
+        <div class="error-message" *ngIf="taskName?.invalid && taskName?.touched">
+          <span *ngIf="taskName?.errors?.['required']">Task name is required.</span>
+          <span *ngIf="taskName?.errors?.['minlength']">Task name must be at least 3 characters.</span>
+        </div>
+      </div>
+
+      <!-- End Time Field -->
+      <div class="form-group">
+        <label for="taskEndTime">End Time:</label>
+        <input 
+          id="taskEndTime"
+          type="datetime-local" 
+          formControlName="endTime" 
+          class="form-control"
+          [class.error]="taskEndTime?.invalid && taskEndTime?.touched">
+        <div class="error-message" *ngIf="taskEndTime?.invalid && taskEndTime?.touched">
+          <span *ngIf="taskEndTime?.errors?.['required']">End time is required.</span>
+        </div>
+      </div>
+
+      <!-- Priority Field -->
+      <div class="form-group">
+        <label for="taskPriority">Priority:</label>
+        <select 
+          id="taskPriority"
+          formControlName="priority" 
+          class="form-control">
+          <option value="High">High</option>
+          <option value="Low">Low</option>
+        </select>
+      </div>
+
+      <!-- Submit Button -->
+      <button 
+        type="submit" 
+        class="btn btn-primary"
+        [disabled]="taskForm.invalid">
+        Add Task
+      </button>
+    </form>
+  </div>
+
+  <!-- Task List Display -->
+  <div class="task-list-container">
+    <h3>Task List</h3>
+    
+    <!-- Active Tasks -->
+    <div *ngIf="activeTasks.length > 0" class="task-section">
+      <h4>Active Tasks</h4>
+      <div class="task-list">
+        <div 
+          *ngFor="let task of activeTasks" 
+          class="task-item"
+          [class.high-priority]="task.priority === 'High'"
+          [class.low-priority]="task.priority === 'Low'">
+          
+          <div class="task-content">
+            <div class="task-header">
+              <span class="task-name">{{ task.name }}</span>
+              <span class="priority-badge" 
+                    [class.priority-high]="task.priority === 'High'"
+                    [class.priority-low]="task.priority === 'Low'">
+                {{ task.priority }}
+              </span>
+            </div>
+            <div class="task-details">
+              <span class="task-end-time">
+                Due: {{ task.endTime | date:'medium' }}
+              </span>
+            </div>
+          </div>
+          
+          <div class="task-actions">
+            <button 
+              (click)="markTaskComplete(task.id)" 
+              class="btn btn-success btn-sm">
+              ✓ Mark Done
+            </button>
+            <button 
+              (click)="deleteTask(task.id)" 
+              class="btn btn-danger btn-sm">
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Completed Tasks -->
+    <div *ngIf="completedTasks.length > 0" class="task-section">
+      <h4>Completed Tasks</h4>
+      <div class="task-list">
+        <div 
+          *ngFor="let task of completedTasks" 
+          class="task-item completed-task">
+          
+          <div class="task-content">
+            <div class="task-header">
+              <span class="task-name completed-text">{{ task.name }}</span>
+              <span class="priority-badge completed" 
+                    [class.priority-high]="task.priority === 'High'"
+                    [class.priority-low]="task.priority === 'Low'">
+                {{ task.priority }}
+              </span>
+            </div>
+            <div class="task-details">
+              <span class="task-end-time completed-text">
+                Due: {{ task.endTime | date:'medium' }}
+              </span>
+            </div>
+          </div>
+          
+          <div class="task-actions">
+            <button 
+              (click)="markTaskComplete(task.id)" 
+              class="btn btn-warning btn-sm">
+              ↶ Undo
+            </button>
+            <button 
+              (click)="deleteTask(task.id)" 
+              class="btn btn-danger btn-sm">
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="tasks.length === 0" class="empty-state">
+      <p>No tasks yet. Add your first task above!</p>
+    </div>
+  </div>
+</div>
