@@ -31,7 +31,7 @@ export class TaskSchedularComponent implements OnInit {
   aiError: string | null = null;
 
   // Define API key directly in the component
-  private readonly GEMINI_API_KEY = 'AIzaSyADmJg2BH6xnOkk_Oi3UGGR4hUN3PQmE64';
+  private readonly GEMINI_API_KEY = 'Gemini api key';
   private genAI = new GoogleGenerativeAI(this.GEMINI_API_KEY);
   private model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
